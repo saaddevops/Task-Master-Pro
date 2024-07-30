@@ -20,6 +20,27 @@ jobs:
       
     - name: trivy filescan
       run: trivy fs --format table -o fs.html .
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: docker build image
+      run: 
+       docker build -t 797272/devtaskmaster .
+        
+    - name: trivy image scan
+      run: 
+       trivy image --format table -o image.html 797272/devtaskmaster
+      
+    # - name: Login to Docker Hub
+    #   uses: docker/login-action@v3
+    #     with:
+    #       username: ${{ secrets.DOCKERHUB_USERNAME }}
+    #       password: ${{ secrets.DOCKERHUB_TOKEN }}
+     
     
       
 
