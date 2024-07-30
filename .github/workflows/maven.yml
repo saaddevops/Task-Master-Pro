@@ -45,6 +45,12 @@ jobs:
       run:
        docker push 797272/devtaskmaster:latest
 
+    - name: kubectl Action
+      uses: tale/kubectl-action@v1
+      with:
+        base64-kube-config: ${{ secrets.KUBE_CONFIG }}
+    - run:
+        kubectl apply -f deployment-service.yml
     
      
     
