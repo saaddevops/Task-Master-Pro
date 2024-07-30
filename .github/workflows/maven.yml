@@ -1,36 +1,30 @@
 
 
-name: CDPROD
+name: CiCD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "dev" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "dev" ]
 
 jobs:
   build:
 
     runs-on: self-hosted
 
-    steps:
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+   steps:
+   - uses: actions/checkout@v4
+   - name: SETUP jdk 17
+   - uses: actions/setup-java@v4
+     with:
+     distribution: 'temurin'
+     java-version: '17'
+     cache: 'maven'
+   - name: Build with Maven
+     run: mvn -B package --file pom.xml
 
-    - name: Push Docker Image
-      run: |
-          docker pull adijaiswal/devtaskmaster:latest
-          docker tag adijaiswal/devtaskmaster:latest adijaiswal/prodtaskmaster:latest
-          docker push adijaiswal/prodtaskmaster:latest
-    - name: Kubectl Action
-      uses: tale/kubectl-action@v1
-      with:
-        base64-kube-config: ${{ secrets.KUBE_CONFIG_PROD }}
-    - run: |
-          kubectl apply -f deployment-service.yml
+    
       
 
    
